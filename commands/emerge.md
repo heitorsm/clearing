@@ -1,0 +1,5 @@
+---
+description: Vault-level emergence analysis: leverage points, feedback loops, self-organizing clusters, silent domains (Meadows lens)
+---
+
+Run the emergence analysis over the whole vault. First, produce the graph data: run scan_vault.py with graph metrics (in/out centrality, cross-domain bridge scores, co-citation pairs, densely linked clusters without a MOC, per-folder bridge counts). Then invoke the relation-scout agent with its emergence lens on that data to produce four ranked sections: leverage points (high-centrality cross-domain notes, with the direction of intervention for each), feedback loops (mutual-citation loops and what they amplify), self-organizing clusters (emergent structures asking for a MOC, each proposed as a question-titled MOC), and silent domains (volume without bridges). Present the findings, then on approval persist a synthesis note in Atlas/ titled with the date, connected to the notes it names, and log to System/. This is the periodic ritual that turns the vault from a pile of notes into a system that shows its own leverage points.

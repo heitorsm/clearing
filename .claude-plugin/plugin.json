@@ -1,0 +1,20 @@
+{
+  "name": "clearing",
+  "version": "0.1.0",
+  "description": "Cultivate divergent tree-thinking in your Obsidian vault, then prune to clarity. Friction-zero capture, isolated multi-frame ideation, qualified convergence, and emergence detection.",
+  "author": {
+    "name": "Heitor Miranda"
+  },
+  "repository": "https://github.com/heitormiranda/clearing",
+  "license": "MIT",
+  "keywords": [
+    "obsidian",
+    "pkm",
+    "divergent-thinking",
+    "ideation",
+    "double-diamond",
+    "zettelkasten",
+    "serendipity",
+    "systems-thinking"
+  ]
+}
