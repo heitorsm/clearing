@@ -10,18 +10,24 @@ The name: a clearing is what you reach after walking through dense forest, and o
 
 The full divergence-convergence cycle of the Double Diamond, grounded in a personal knowledge vault:
 
-| Double Diamond | clearing |
-|---|---|
-| Discover / Define (problem space) | Phase 0 of /diverge: Reframe (abstraction laddering, Wedell-Wedellsborg moves) + pruning contract + grounding brief harvested from the vault |
-| Develop (solution divergence) | Phase 1: N parallel isolated branches under cognitive frames, generator only, evaluation forbidden |
-| Deliver (solution convergence) | Phase 2: qualified pruning against the contract, per-criterion verdicts, trap detection; Phase 3: persistence into the vault |
-| The engine around the diamonds | Capture (/triage flow), incubation (/converge), corpus health (/diagnose, /enrich), and system-level emergence (/emerge, Donella Meadows lens) |
+
+| Double Diamond                    | clearing                                                                                                                                       |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| Discover / Define (problem space) | Phase 0 of /diverge: Reframe (abstraction laddering, Wedell-Wedellsborg moves) + pruning contract + grounding brief harvested from the vault   |
+| Develop (solution divergence)     | Phase 1: N parallel isolated branches under cognitive frames, generator only, evaluation forbidden                                             |
+| Deliver (solution convergence)    | Phase 2: qualified pruning against the contract, per-criterion verdicts, trap detection; Phase 3: persistence into the vault                   |
+| The engine around the diamonds    | Capture (/triage flow), incubation (/converge), corpus health (/diagnose, /enrich), and system-level emergence (/emerge, Donella Meadows lens) |
+
+
+
 
 ## Requirements
 
 - Claude Code or Claude Cowork (plugins are not installable on claude.ai web; see Modes below).
 - For the full experience (vault-mode): Obsidian 1.12.7+ with the CLI registered (Settings: General: Command line interface) and Obsidian running. Validate with `obsidian version` and `obsidian vault`.
 - A vault following the ACE + Zettelkasten layout (Inbox, Atlas, Calendar, Efforts, Clippings, Work, Archive, System, 0.Templates). Other layouts work with minor edits to the skills' folder maps.
+
+
 
 ## Install
 
@@ -41,10 +47,12 @@ claude.ai web cannot install plugins: zip the individual skill folders (`skills/
 ```
 /diagnose            # first contact: vault health, graph metrics, priority queue
 /triage              # empty your Inbox with assisted classification
-/diverge how should we structure the pricing model for X?
+/diverge             # how should we structure the pricing model for X?
 /converge            # weekly: what is ripe, what is decaying
 /emerge              # monthly: leverage points and emergent structures
 ```
+
+
 
 ## The choreography
 
@@ -71,22 +79,30 @@ The Squiggle is not linear and neither is your week. This is when to be in which
 - **Emerge** is the systems-thinking ritual (Meadows): leverage points, feedback loops, self-organizing clusters, silent domains. It looks at the vault as a system, not as notes.
 - **Enrich / Diagnose** keep the corpus healthy so grounding and connections stay trustworthy.
 
+
+
 ## Commands
 
-| Command | What it does | Skill behind it |
-|---|---|---|
-| /diverge [problem] | Full grounded divergence session, gate bypassed | vault-diverge |
-| /triage | Inbox triage: classify, tag, connect, file | obsidian-parking-lot OP2 |
-| /converge | Periodic convergence: clusters, maturity, decay | obsidian-parking-lot OP4 |
-| /diagnose | Vault health + graph metrics + priority queue | vault-enrichment OP1 |
-| /enrich [n or notes] | Batch metadata enrichment | vault-enrichment OP2 |
-| /emerge | Leverage points, loops, emergent clusters | scan + relation-scout |
+
+| Command              | What it does                                    | Skill behind it          |
+| -------------------- | ----------------------------------------------- | ------------------------ |
+| /diverge [problem]   | Full grounded divergence session, gate bypassed | vault-diverge            |
+| /triage              | Inbox triage: classify, tag, connect, file      | obsidian-parking-lot OP2 |
+| /converge            | Periodic convergence: clusters, maturity, decay | obsidian-parking-lot OP4 |
+| /diagnose            | Vault health + graph metrics + priority queue   | vault-enrichment OP1     |
+| /enrich [n or notes] | Batch metadata enrichment                       | vault-enrichment OP2     |
+| /emerge              | Leverage points, loops, emergent clusters       | scan + relation-scout    |
+
+
+
 
 ## Skills
 
 - **vault-diverge**: the 4-phase loop (Anchor with Reframe, Diverge, Qualified Pruning, Persist). Adapted from the MIT-licensed [adhd](https://github.com/UditAkhourii/adhd) skill by UditAkhouri, with three structural additions: source grounding from the vault, a pruning contract with per-criterion verdicts, and persistence into the incubation flow.
 - **obsidian-parking-lot**: capture, triage, connection analysis, periodic convergence, incubation review. Lifecycle by frontmatter status, notes live in semantic folders.
 - **vault-enrichment**: progressive enrichment of the legacy corpus, tag vocabulary management, deep scan with graph metrics. Vault-only.
+
+
 
 ## Agents
 
@@ -95,6 +111,8 @@ Three postures, mechanically separated (the load-bearing design choice inherited
 - **divergent-generator**: pure generation, evaluation forbidden, obvious-first-three banned, banlist-aware.
 - **relation-scout**: semantic connections (second-order, bridge notes) with a mandatory quality filter, plus the emergence lens for /emerge. Gated: mechanical lookups (backlinks, shared tags) are handled by the orchestrator with two CLI calls; the scout is invoked only for judgment.
 - **convergent-critic**: mandatory evaluation against the Phase 0 contract, per-criterion verdict for every cut, traps with mechanistic reasons, cluster and commit with a starred non-obvious-but-viable pick.
+
+
 
 ## Example walkthroughs
 
@@ -123,6 +141,8 @@ Three postures, mechanically separated (the load-bearing design choice inherited
 >
 > claude: Leverage points: [[feedback-loops]] bridges 4 domains with 11 links; enriching it reorganizes marketing, engineering, and biology clusters at once. Mutual-citation loop: [[mmm-priors]] <-> [[bayesian-calibration]], amplifying each other with no third connection: consider a bridge. MOC-less cluster: #cdp with 9 notes and no map: proposed MOC, "What does identity resolution actually decide?". Silent domain: `Lists/` has volume, zero bridges (expected). Synthesis persisted to Atlas/ on your approval.
 
+
+
 ## Data contract
 
 Unified frontmatter schema (English values are canonical):
@@ -148,12 +168,16 @@ Legacy migration: older notes may carry Portuguese values (`ativo`, `arquivado`,
 - **vault-mode**: Obsidian CLI available. Full experience: grounding from the vault, wikilink persistence, Dataview surfacing, graph metrics.
 - **artifact-mode**: no CLI (Cowork project without local Obsidian, claude.ai). vault-diverge runs nearly complete (grounding from project documents, output as a versioned `current-divergence-<slug>.md` artifact). parking-lot runs a triage/convergence subset over an inbox document. vault-enrichment does not operate and says so. The mode is detected and announced once per session; degradation is always declared, never simulated.
 
+
+
 ## Non-goals
 
 Deliberate exclusions, so the plugin stays a thinking tool and does not become a product-team pipeline:
 
 - No stakeholder share-out rituals (Kickoff/Inception ceremonies). The only gate that matters solo is check 4 of the pre-flight: is this problem validated?
 - No Build & Learn delivery pipeline (prototyping, KPI tracking, experiment management). The single concession is the `outcome` frontmatter field, closing the learning loop in one line.
+
+
 
 ## Cost
 
@@ -170,6 +194,8 @@ Deliberate exclusions, so the plugin stays a thinking tool and does not become a
 - UditAkhouri, adhd (MIT): the parallel isolated divergence loop this plugin's Phase 1 descends from
 - Nick Milo (ACE, MOCs), Andy Matuschak (evergreen notes), Sönke Ahrens (Zettelkasten)
 
+
+
 ## Troubleshooting
 
 - `obsidian: command not found`: re-register the CLI (Settings: General), open a new terminal. In non-login shells, export the binary path.
@@ -177,6 +203,8 @@ Deliberate exclusions, so the plugin stays a thinking tool and does not become a
 - Notes not found by name: subfolder notes require `path="Folder/note.md"`; `name=` does not accept `/`.
 - Broken wikilinks after a move: something used system `mv`. Always `obsidian move`.
 - Slow bulk operations: the CLI is one app call per command; use `scan_vault.py` for analysis at scale.
+
+
 
 ## License
 
