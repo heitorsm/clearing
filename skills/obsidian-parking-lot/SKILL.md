@@ -1,7 +1,7 @@
 ---
 name: obsidian-parking-lot
 description: |
-  Idea and divergent-thinking management over an Obsidian vault via the Obsidian CLI (v1.12.7+), adapted to an ACE + Zettelkasten vault (Inbox, Atlas, Calendar, Efforts, Clippings, Archive, System, 0.Templates), with the parking-lot lifecycle governed by frontmatter (status). Runs 5 operations: capture, inbox triage, connection analysis, periodic convergence, incubation review. Use when the user mentions: parking lot, inbox, triage notes, process inbox, review parking lot, converge ideas, analyze connections, clean inbox, organize vault, capture idea, what is in my inbox, incubate ideas, loose notes, cognitive backlog, triar, convergir, capturar ideia, "tive uma ideia", "preciso anotar isso", "o que eu estava pensando sobre X", "quais padrões estão aparecendo". Requires the Obsidian CLI on PATH and Obsidian running (vault-mode); degrades to a limited artifact-mode on project documents.
+  Idea and divergent-thinking management over an Obsidian vault via the Obsidian CLI (v1.12.7+), adapted to an ACE + Zettelkasten vault (Inbox, Atlas, Calendar, Efforts, Clippings, Archive, System, 0.Templates), with the parking-lot lifecycle governed by frontmatter (status). Runs 5 operations: capture, status-driven triage (Inbox captures and Clippings alike), connection analysis, periodic convergence, incubation review. Use when the user mentions: parking lot, inbox, triage notes, process inbox, triage clippings, review parking lot, converge ideas, analyze connections, clean inbox, organize vault, capture idea, what is in my inbox, incubate ideas, loose notes, cognitive backlog, triar, convergir, capturar ideia, "tive uma ideia", "preciso anotar isso", "o que eu estava pensando sobre X", "quais padrões estão aparecendo". Requires the Obsidian CLI on PATH and Obsidian running (vault-mode); degrades to a limited artifact-mode on project documents.
 ---
 
 # Obsidian Parking Lot
@@ -58,7 +58,7 @@ inbox -> parking-lot -> active -> archived
 
 | Status | Typical folder | Meaning |
 |---|---|---|
-| `inbox` | Inbox/ | Raw capture, unprocessed |
+| `inbox` | Inbox/, Clippings/ | Raw capture or fresh clipping, unprocessed |
 | `parking-lot` | Clippings/, Atlas/, Efforts/ | Triaged, categorized, awaiting action or incubating |
 | `active` | Efforts/ | Promoted to concrete action |
 | `archived` | Archive/ | Long-term reference |
@@ -142,6 +142,10 @@ project:
 ## Next Step
 ```
 
+### Web Clipper template (one-time user setup, recommended)
+
+Configure the Obsidian Web Clipper template to include `status: inbox` in the frontmatter of every clip. New clippings then enter the triage queue automatically via the primary status search, with no backfill pass needed.
+
 Logs go to `System/` as `triage-log-YYYY-MM-DD.md` and `convergence-log-YYYY-MM-DD.md` (summary, notes processed, patterns observed).
 
 ## Operations
@@ -162,14 +166,20 @@ Trigger: "tive uma ideia", "I have an idea", "note this down", "capture".
 
 Rule: never ask for categorization at capture time. Organization happens at triage.
 
-### OP2: Inbox Triage
+### OP2: Triage (status-driven: Inbox captures and Clippings alike)
 
-Trigger: "/triage", "triage inbox", "process inbox", "what is in my inbox", "triar inbox".
+Trigger: "/triage", "triage inbox", "triage clippings", "process inbox", "what is in my inbox", "triar inbox".
 
-1. List: `obsidian search query="path:Inbox" format=json`
+The queue is status-driven, not folder-driven, honoring the vault principle that stage lives in frontmatter.
+
+1. Build the queue in two passes:
+   - **Primary**: `obsidian search query='[status:inbox] -path:0.Templates' format=json`. Any folder qualifies: Inbox/ captures and status-tagged clippings enter the same queue.
+   - **Clippings backfill**: list `path:Clippings`, check properties, and include notes with NO `status` field (clipped before the status convention). Cap the backfill at 10 per session and say so when there are more.
 2. For each note, read with `obsidian read` and propose: category (projects, insights, references, explore), tags grounded in `obsidian tags counts`, connections (mechanical lookups via `obsidian search`/`obsidian backlinks`; invoke the relation-scout agent only for deep semantic passes), and a next step. With 6+ notes and sub-agents available, parallelize analysis and consolidate into one review.
 3. Present proposals note by note; the user validates, edits, or discards.
-4. For each validated note:
+4. Apply per note type:
+
+   **Idea notes** (from Inbox/):
    ```bash
    obsidian property:set name="status" value="parking-lot" path="Inbox/note.md"
    obsidian property:set name="triaged" value="YYYY-MM-DD" path="Inbox/note.md"
@@ -181,11 +191,23 @@ Trigger: "/triage", "triage inbox", "process inbox", "what is in my inbox", "tri
    obsidian move path="Inbox/note.md" to="Clippings/"  # references
    obsidian move path="Inbox/note.md" to="Efforts/"    # projects
    ```
-5. Discards:
+
+   **Clippings** (notes in Clippings/ or carrying Web Clipper fields):
+   - NEVER apply the triaged-note template and NEVER overwrite Clipper fields (title, source, author, published, description).
+   - The note is NOT moved: Clippings/ is already the semantic destination for references. Triage is in place:
    ```bash
-   obsidian property:set name="status" value="discarded" path="Inbox/note.md"
-   obsidian property:set name="reason" value="one-line reason" path="Inbox/note.md"
-   obsidian move path="Inbox/note.md" to="Archive/"
+   obsidian property:set name="status" value="parking-lot" path="Clippings/article-title.md"
+   obsidian property:set name="triaged" value="YYYY-MM-DD" path="Clippings/article-title.md"
+   obsidian property:set name="category" value="references" path="Clippings/article-title.md"
+   ```
+   Add thematic tags and connections via property edits or `obsidian append`.
+   - **The key clipping question: does it spawn a derived note?** If the user has their own insight about the article, create a separate idea note (Inbox/ if raw, Atlas/ if already shaped) connected to the clipping via `connections`. Literature in, permanent notes out.
+   - Optionally append a `## My take` section with the user's one-liner.
+5. Discards (both types):
+   ```bash
+   obsidian property:set name="status" value="discarded" path="Clippings/note.md"
+   obsidian property:set name="reason" value="one-line reason" path="Clippings/note.md"
+   obsidian move path="Clippings/note.md" to="Archive/"
    ```
 6. Write the triage log to System/.
 
@@ -237,11 +259,20 @@ WHERE status = "parking-lot"
 SORT triaged DESC
 ```
 
-Inbox to triage:
+Triage queue (status-driven):
 
 ```dataview
 LIST
 WHERE status = "inbox"
+SORT file.ctime DESC
+```
+
+Unprocessed clippings (no status yet):
+
+```dataview
+LIST
+FROM "Clippings"
+WHERE !status
 SORT file.ctime DESC
 ```
 

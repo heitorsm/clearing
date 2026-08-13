@@ -8,13 +8,15 @@ Guia operacional do plugin clearing: o que fazer em cada situação, o que digit
 2. `obsidian version` responde no terminal. Se não responder: re-registrar a CLI em Settings: General: Command line interface e abrir um terminal novo.
 3. O Claude anuncia o modo na primeira operação: **vault-mode** (experiência completa) ou **artifact-mode** (sem CLI; ver UC10).
 
+Os comandos do plugin são namespaced: digite `/clearing:` para ver os seis (`/clearing:triage`, `/clearing:converge`, `/clearing:diverge`, `/clearing:diagnose`, `/clearing:enrich`, `/clearing:emerge`). Neste runbook eles aparecem na forma curta.
+
 ## Mapa de 10 segundos
 
 | Situação | O que fazer | Frequência |
 |---|---|---|
 | Ideia solta no meio do dia | "tive uma ideia: ..." | Sempre, na hora |
 | Li algo que vale guardar | Web Clipper ou "capture isso: ..." | Sempre, na hora |
-| Inbox acumulou | `/triage` | Diário ou a cada 2-3 dias |
+| Inbox ou clippings acumularam | `/triage` | Diário ou a cada 2-3 dias |
 | Decisão difícil e aberta | `/diverge <problema>` | Pontos de decisão |
 | O que está maduro? Rever os pontos | `/converge` | Semanal |
 | O que eu pensava sobre X? | "o que eu estava pensando sobre X?" | Sob demanda |
@@ -28,7 +30,9 @@ Guia operacional do plugin clearing: o que fazer em cada situação, o que digit
 
 Dois caminhos, conforme onde você está lendo:
 
-**Caminho A: artigo na web.** Use o Obsidian Web Clipper como sempre: a nota cai em `Clippings/` com os metadados do Clipper (title, source, author). Ela entra no sistema na próxima `/triage` ou `/enrich`, que adiciona maturity, tags temáticas e connections sem tocar nos campos do Clipper.
+**Caminho A: artigo na web.** Use o Obsidian Web Clipper como sempre: a nota cai em `Clippings/` com os metadados do Clipper (title, source, author). **Configuração única recomendada:** edite o template do Web Clipper para incluir `status: inbox` no frontmatter de todo clip; com isso, cada artigo clipado entra automaticamente na fila do próximo `/triage`. Clippings antigos sem `status` também entram: a triagem faz um backfill de até 10 por sessão.
+
+A triagem de clipping é diferente da triagem de ideia: acontece **in place** (a nota não sai de `Clippings/`, que já é o destino de references), preserva todos os campos do Clipper, e adiciona status, tags temáticas e connections. E faz a pergunta zetteliana: **este artigo gera uma nota derivada?** Se você tem um insight próprio, ele vira nota separada conectada ao clipping: literatura entra, nota permanente sai.
 
 **Caminho B: lendo com o Claude (PDF, transcrição, discussão).** Diga em linguagem natural:
 
@@ -48,11 +52,11 @@ Nota em `Inbox/`, slug com data, confirmação em uma linha. Não interrompa o q
 
 ### UC3. Chegou a hora de organizar: triagem
 
-Digite `/triage`. O Claude lista o Inbox, lê cada nota e propõe em bloco: categoria (`projects`, `insights`, `references`, `explore`), 3 a 5 tags reaproveitando o vocabulário existente, conexões com justificativa, e um próximo passo. Você valida item a item ou em bloco: aprovar, editar ou descartar.
+Digite `/triage`. A fila é montada por **status, não por pasta** (o princípio do vault): tudo com `status: inbox` em qualquer lugar, mais o backfill de clippings sem status. O Claude lê cada nota e propõe em bloco: categoria (`projects`, `insights`, `references`, `explore`), 3 a 5 tags reaproveitando o vocabulário existente, conexões com justificativa, e um próximo passo. Você valida item a item ou em bloco: aprovar, editar ou descartar.
 
-Ao aprovar, cada nota recebe `status: parking-lot`, é reestruturada com o template e movida para a pasta semântica preservando wikilinks: `projects` para `Efforts/` (ou `Work/Clientes/<cliente>/` com sua confirmação), `insights` e `explore` para `Atlas/`, `references` para `Clippings/`. Descartes viram `status: discarded` com `reason` em uma linha e vão para `Archive/`: descarte consciente é feature, não falha. Log em `System/`.
+Ao aprovar, cada tipo segue seu fluxo. **Notas de ideia** recebem `status: parking-lot`, o template de nota triada, e são movidas para a pasta semântica preservando wikilinks: `projects` para `Efforts/` (ou `Work/Clientes/<cliente>/` com sua confirmação), `insights` e `explore` para `Atlas/`, `references` para `Clippings/`. **Clippings** são triados in place: status, tags e connections, sem mover e sem tocar nos campos do Clipper, com a pergunta da nota derivada. Descartes de ambos os tipos viram `status: discarded` com `reason` em uma linha e vão para `Archive/`: descarte consciente é feature, não falha. Log em `System/`.
 
-Sinal de alerta: Inbox acima de 30 notas significa triagem atrasada; agende 15 minutos hoje.
+Sinal de alerta: fila acima de 30 notas significa triagem atrasada; agende 15 minutos hoje.
 
 ### UC4. Preciso decidir algo difícil: divergência
 
@@ -134,12 +138,14 @@ O modo é detectado e anunciado uma vez. O que funciona: `/diverge` quase comple
 - Categorizando na hora da captura: fricção que mata o hábito. Capture e siga.
 - `/diverge` para pergunta trivial: 12 calls para o que uma resposta direta resolvia.
 - Aceitando todas as conexões sugeridas: conexão sem "importa porque" é ruído no grafo.
-- Inbox acima de 30: triagem atrasada.
+- Fila de triagem acima de 30: triagem atrasada.
+- Clippings acumulando sem nota derivada: você está colecionando leitura, não pensando com ela. A pergunta "isso gera nota derivada?" existe para isso.
 - Nunca descartar nada: parking lot vira aterro. O descarte consciente com `reason` é parte do método.
 - Contrato de poda genérico ("deve ser bom"): poda sem critério decidível é poda não-qualificada.
 
 ## Troubleshooting rápido
 
+- Comandos não aparecem: eles são namespaced (`/clearing:triage`); plugins carregam apenas em conversas novas, abertas depois da instalação.
 - `obsidian: command not found`: re-registrar a CLI (Settings: General) e abrir terminal novo.
 - `Error: Operator "status" not recognized`: busca por propriedade exige colchetes: `[status:parking-lot]`.
 - Nota em subpasta não encontrada: use `path="Pasta/nota.md"`; `name=` não aceita `/`.

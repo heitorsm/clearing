@@ -9,7 +9,7 @@
       "name": "clearing",
       "source": "./",
       "description": "Cultivate divergent tree-thinking in your Obsidian vault, then prune to clarity. Friction-zero capture, isolated multi-frame ideation, qualified convergence, and emergence detection.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": {
         "name": "Heitor Miranda"
       },
